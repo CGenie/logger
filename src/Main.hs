@@ -68,10 +68,10 @@ string :: String -> RQD.RqData String
 string name = RQD.lookRead name
 
 
-getLatLng :: RQD.RqData Geo.Geo
-getLatLng = do
-    (lat, lng) <- (,) <$> double "latitude" <*> double "longitude"
-    return $ Geo.constructGeo lat lng
+getGeoData :: RQD.RqData (Geo.Geo, String)
+getGeoData = do
+    (lat, lng, deviceName) <- (,,) <$> double "latitude" <*> double "longitude" <*> string "device_name"
+    return $ (Geo.constructGeo lat lng, deviceName)
 
 
 geo :: (IConnection a) => a -> ServerPart Response
@@ -79,14 +79,10 @@ geo db = msum [insertData]
     where
         insertData = do
             method POST
-            geo <- RQD.getDataFn getLatLng
-            device_name <- RQD.getDataFn $ string "device_name"
-            case device_name of
+            geo_data <- RQD.getDataFn getGeoData
+            case geo_data of
                 Left e -> badRequest $ toResponse $ unlines e
-                Right dev_name -> do
+                Right (geo, dev_name) -> do
                     deviceDB <- Geo.createDeviceIfNotExists db dev_name
-                    case geo of
-                        Left e -> badRequest $ toResponse $ unlines e
-                        Right g -> do
-                            gId <- Geo.insertGeo db g (Geo.device_id deviceDB)
-                            ok $ toResponse $ "geo = " ++ (show g) ++ ", device =" ++ (show deviceDB)
+                    gId <- Geo.insertGeo db geo (Geo.device_id deviceDB)
+                    ok $ toResponse $ "geo = " ++ (show geo) ++ ", device =" ++ (show deviceDB)
