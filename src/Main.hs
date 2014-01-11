@@ -64,6 +64,9 @@ echo =
 double :: String -> RQD.RqData Double
 double name = RQD.lookRead name
 
+string :: String -> RQD.RqData String
+string name = RQD.lookRead name
+
 
 getLatLng :: RQD.RqData Geo.Geo
 getLatLng = do
@@ -77,8 +80,13 @@ geo db = msum [insertData]
         insertData = do
             method POST
             geo <- RQD.getDataFn getLatLng
-            case geo of
+            device_name <- RQD.getDataFn $ string "device_name"
+            case device_name of
                 Left e -> badRequest $ toResponse $ unlines e
-                Right g -> do
-                    gId <- Geo.insertGeo db g
-                    ok $ toResponse $ "geo = " ++ (show g)
+                Right dev_name -> do
+                    deviceDB <- Geo.createDeviceIfNotExists db dev_name
+                    case geo of
+                        Left e -> badRequest $ toResponse $ unlines e
+                        Right g -> do
+                            gId <- Geo.insertGeo db g (Geo.device_id deviceDB)
+                            ok $ toResponse $ "geo = " ++ (show g) ++ ", device =" ++ (show deviceDB)

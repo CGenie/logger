@@ -4,6 +4,13 @@ module Logger.Geo (
     longitude,
     constructGeo,
 
+    Device,
+    constructDevice,
+    createDeviceIfNotExists,
+
+    DeviceDB,
+    device_id,
+
     createTableIfMissing,
     insertGeo
 ) where
@@ -13,9 +20,17 @@ import Logger.Geo.Base (
         Geo,
         latitude,
         longitude,
-        constructGeo
+        constructGeo,
+
+        Device,
+        constructDevice
     )
 import Logger.Geo.Database(
         createTableIfMissing,
-        insertGeo
+        insertGeo,
+
+        createDeviceIfNotExists,
+
+        DeviceDB,
+        device_id
     )
