@@ -5,11 +5,9 @@ module Logger.Geo (
     constructGeo,
 
     Device,
+    deviceId,
     constructDevice,
     createDeviceIfNotExists,
-
-    DeviceDB,
-    device_id,
 
     createTableIfMissing,
     insertGeo
@@ -23,14 +21,12 @@ import Logger.Geo.Base (
         constructGeo,
 
         Device,
-        constructDevice
+        constructDevice,
+        deviceId
     )
 import Logger.Geo.Database(
         createTableIfMissing,
         insertGeo,
 
-        createDeviceIfNotExists,
-
-        DeviceDB,
-        device_id
+        createDeviceIfNotExists
     )

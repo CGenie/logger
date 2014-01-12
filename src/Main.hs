@@ -82,7 +82,7 @@ geo db = msum [insertData]
             geo_data <- RQD.getDataFn getGeoData
             case geo_data of
                 Left e -> badRequest $ toResponse $ unlines e
-                Right (geo, dev_name) -> do
-                    deviceDB <- Geo.createDeviceIfNotExists db dev_name
-                    gId <- Geo.insertGeo db geo (Geo.device_id deviceDB)
+                Right (geo, devName) -> do
+                    deviceDB <- Geo.createDeviceIfNotExists db devName
+                    gId <- Geo.insertGeo db geo (Geo.deviceId deviceDB)
                     ok $ toResponse $ "geo = " ++ (show geo) ++ ", device =" ++ (show deviceDB)

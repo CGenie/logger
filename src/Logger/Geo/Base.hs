@@ -6,7 +6,7 @@ data Geo = Geo {
 } deriving (Show)
 
 data Device = Device {
-    name :: String
+    deviceId :: String
 } deriving (Show)
 
 constructGeo :: Double -> Double -> Geo
@@ -16,4 +16,4 @@ constructGeo lat lng = Geo {
 }
 
 constructDevice :: String -> Device
-constructDevice name = Device { name = name }
+constructDevice deviceId = Device { deviceId = deviceId }
